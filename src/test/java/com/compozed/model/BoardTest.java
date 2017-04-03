@@ -28,10 +28,10 @@ public class BoardTest {
         assertEquals("New board should have white piece at 4,4", GamePiece.Black, currentBoard[4][4]);
         assertEquals("New board should have white piece at 3,3", GamePiece.Black, currentBoard[3][3]);
 
-        assertEquals("Black can move to[3][5]", GamePiece.BlackPossible, currentBoard[3][5]);
-        assertEquals("Black can move to[4][2]", GamePiece.BlackPossible, currentBoard[4][2]);
-        assertEquals("Black can move to[2][4]", GamePiece.BlackPossible, currentBoard[2][4]);
-        assertEquals("Black can move to[5][3]", GamePiece.BlackPossible, currentBoard[5][3]);
+        assertEquals("Black can move to[3][5]", GamePiece.Possible, currentBoard[3][5]);
+        assertEquals("Black can move to[4][2]", GamePiece.Possible, currentBoard[4][2]);
+        assertEquals("Black can move to[2][4]", GamePiece.Possible, currentBoard[2][4]);
+        assertEquals("Black can move to[5][3]", GamePiece.Possible, currentBoard[5][3]);
     }
 
     @Test

@@ -21,10 +21,10 @@ public class Board {
         this.state[4][3] = GamePiece.White;
         this.state[3][4] = GamePiece.White;
 
-        this.state[2][4] = GamePiece.BlackPossible;
-        this.state[5][3] = GamePiece.BlackPossible;
-        this.state[4][2] = GamePiece.BlackPossible;
-        this.state[3][5] = GamePiece.BlackPossible;
+        this.state[2][4] = GamePiece.Possible;
+        this.state[5][3] = GamePiece.Possible;
+        this.state[4][2] = GamePiece.Possible;
+        this.state[3][5] = GamePiece.Possible;
     }
 
     public int getWhiteCount(){
