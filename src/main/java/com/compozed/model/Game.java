@@ -2,6 +2,8 @@ package com.compozed.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Game {
@@ -34,6 +36,10 @@ public class Game {
     @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Board currentBoard;
 
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Board> history = new ArrayList<>();
+
     private int nextPlayer;
     private int gameWinner;
 
@@ -43,6 +49,14 @@ public class Game {
 
         this.nextPlayer = GamePiece.Black;
         this.gameWinner = GamePiece.Empty;
+    }
+
+    public List<Board> getHistory() {
+        return history;
+    }
+
+    public void setHistory(List<Board> history) {
+        this.history = history;
     }
 
     public Board getCurrentBoard() {
@@ -55,6 +69,8 @@ public class Game {
     }
 
     public void placePiece(int color, int xPosition, int yPosition) {
+        history.add(this.currentBoard);
+
         currentBoard.setPiece(color, xPosition, yPosition);
         flipIfNeeded(xPosition, yPosition, -1, 0);
         flipIfNeeded(xPosition, yPosition, 0, -1);

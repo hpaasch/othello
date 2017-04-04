@@ -122,5 +122,13 @@ public class GameTest {
 
     }
 
+    @Test
+    public void testSaveGameHistory() throws Exception {
+        Game game = new Game();
+        game.placePiece( GamePiece.Black, 2, 4 );
+
+        assertEquals( "Game should have history after moving a piece", 1, game.getHistory().size() );
+    }
+
 }
 

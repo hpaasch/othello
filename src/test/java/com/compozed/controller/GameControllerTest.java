@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,5 +57,6 @@ public class GameControllerTest {
         board = savedGame.getCurrentBoard();
         state = board.getState();
         assertEquals( "Chip at 3, 4 should now be black", GamePiece.Black, state[3][4] );
+        assertEquals( "Should have a saved game history", 1, game.getHistory().size());
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -66,6 +67,11 @@ public class Board {
     public void setParent(Game parent) {
         this.parent = parent;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "history_id")
+    @JsonIgnore
+    private Game history = null;
 
     public Board(){
         this.state = new int[8][8];
