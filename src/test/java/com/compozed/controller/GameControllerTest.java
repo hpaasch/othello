@@ -4,6 +4,7 @@ import com.compozed.model.Board;
 import com.compozed.model.Game;
 import com.compozed.model.GamePiece;
 import com.compozed.repository.GameRepository;
+import org.hibernate.annotations.SourceType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class GameControllerTest {
 
         Board board = game.getCurrentBoard();
         int[][] state = board.getState();
+        System.out.println(board.toString());
         assertEquals( "Chip at 3, 4 should be white", GamePiece.White, state[3][4] );
 
         MockHttpServletRequestBuilder request = post("/games/1")
@@ -52,10 +54,13 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$.nextPlayer", equalTo(1)));
 
         Game savedGame = gameRepository.findOne(1L);
+        System.out.println("Repo Print\n" + savedGame.getCurrentBoard().getSerializedBoard());
+
         savedGame.getCurrentBoard().setState();
 
         board = savedGame.getCurrentBoard();
         state = board.getState();
+        System.out.println("Test Print\n" + board.toString());
         assertEquals( "Chip at 3, 4 should now be black", GamePiece.Black, state[3][4] );
         assertEquals( "Should have a saved game history", 1, game.getHistory().size());
     }

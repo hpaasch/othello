@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -73,6 +74,17 @@ public class BoardTest {
         }
 
         assertEquals("it returns tie for same number of pieces", GamePiece.Tie, board.checkForWinner());
+    }
+
+    @Test
+    public void testCloneMaintainsPieceIntegrity() {
+        Board board = new Board();
+
+        Board board2 = board.clone();
+
+        assertNotEquals("Clone board has different mem location", board, board2);
+
+        assertEquals("Board clone should have identical pieces", board.getPiece(3,3), board2.getPiece(3,3));
     }
 
 

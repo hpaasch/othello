@@ -25,7 +25,7 @@ public class Board {
             for( List<Integer> rows : stateArray ) {
                 int x = 0;
                 for( Integer val : rows ) {
-                    state[y][x] = val;
+                    state[x][y] = val;
                     x++;
                 }
 
@@ -48,11 +48,7 @@ public class Board {
     }
 
     public void setSerializedBoard() {
-        try {
-            this.serializedBoard = mapper.writeValueAsString(this.state);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        this.serializedBoard = this.toJson();
     }
 
     @JoinColumn(name = "game_id")
@@ -145,6 +141,19 @@ public class Board {
         return GamePiece.Empty;
     }
 
+    public Board clone() {
+        Board board = new Board();
+
+        System.out.println( "Board: " + this.toString() );
+        this.setSerializedBoard();
+        System.out.println( "Serialized board: " + board.serializedBoard );
+        board.serializedBoard = this.serializedBoard;
+        board.setState();
+        System.out.println( "New Board: " + board.toString() );
+
+        return board;
+    }
+
     @Override
     public String toString(){
         StringBuilder builder = new StringBuilder();
@@ -157,8 +166,29 @@ public class Board {
                 }
             }
             builder.append("\n");
+        }
+
+        return builder.toString();
+    }
+
+    public String toJson(){
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (int y = 7; y >= 0; y--) {
+            if(y != 7){
+                builder.append(", ");
+            }
+            builder.append("[");
+            for (int x = 0; x < 8; x++) {
+                builder.append(state[x][y]);
+                if(x< 7){
+                    builder.append(", ");
+                }
+            }
+            builder.append("]");
 
         }
+        builder.append("]");
 
         return builder.toString();
     }

@@ -69,7 +69,8 @@ public class Game {
     }
 
     public void placePiece(int color, int xPosition, int yPosition) {
-        history.add(this.currentBoard);
+        Board copyOfBoard = currentBoard.clone();
+        history.add(copyOfBoard);
 
         currentBoard.setPiece(color, xPosition, yPosition);
         flipIfNeeded(xPosition, yPosition, -1, 0);
