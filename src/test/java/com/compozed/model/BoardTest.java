@@ -45,4 +45,37 @@ public class BoardTest {
 
         assertEquals("Set piece should change cell to specified piece", GamePiece.Black, currentBoard[2][4]);
     }
+
+    @Test
+    public void testCheckForWinner(){
+
+        Board board = new Board();
+        assertEquals("it returns no winner", GamePiece.Empty, board.checkForWinner());
+
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                board.setPiece(GamePiece.Black, x, y);
+            }
+        }
+
+        assertEquals("it returns Black player is winner", GamePiece.Black, board.checkForWinner());
+
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                board.setPiece(GamePiece.White, x, y);
+            }
+        }
+
+        assertEquals("it returns White player is winner", GamePiece.White, board.checkForWinner());
+
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                board.setPiece( ( x + y ) % 2 == 0 ? GamePiece.Black : GamePiece.White, x, y);
+            }
+        }
+
+        assertEquals("it returns tie for same number of pieces", GamePiece.Tie, board.checkForWinner());
+    }
+
+
 }

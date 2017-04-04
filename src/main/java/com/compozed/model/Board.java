@@ -1,5 +1,7 @@
 package com.compozed.model;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 /**
  * Created by localadmin on 4/3/17.
  */
@@ -61,6 +63,19 @@ public class Board {
 
     public void flipPiece(int xPosition, int yPosition){
         this.state[xPosition][yPosition] = this.state[xPosition][yPosition] == GamePiece.Black ? GamePiece.White : GamePiece.Black;
+    }
+
+    public int checkForWinner() {
+        int blackCount = this.getBlackCount();
+        int whiteCount = this.getWhiteCount();
+        if (blackCount + whiteCount == 64) {
+            if (blackCount == whiteCount) {
+                return GamePiece.Tie;
+            } else {
+                return blackCount > whiteCount ? GamePiece.Black : GamePiece.White;
+            }
+        }
+        return GamePiece.Empty;
     }
 
     @Override

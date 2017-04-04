@@ -5,4 +5,5 @@ public interface GamePiece {
     int White = 1;
     int Black = 2;
     int Possible = 3;
+    int Tie = 4;
 }
