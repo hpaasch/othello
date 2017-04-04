@@ -1,15 +1,73 @@
 package com.compozed.model;
 
-import org.springframework.web.bind.annotation.PathVariable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by localadmin on 4/3/17.
- */
+@Entity
 public class Board {
+    @Transient
+    @JsonIgnore
+    private ObjectMapper mapper = new ObjectMapper();
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    public void setState() {
+        List<List<Integer>> stateArray = new ArrayList<>();
+        try {
+            stateArray = mapper.readValue(this.serializedBoard, stateArray.getClass());
+            int y = 7;
+            for( List<Integer> rows : stateArray ) {
+                int x = 0;
+                for( Integer val : rows ) {
+                    state[y][x] = val;
+                    x++;
+                }
+
+                y--;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Transient
+    @JsonIgnore
     private int[][] state;
 
-    public Board() {
+    private String serializedBoard;
+
+    public String getSerializedBoard() throws Exception{
+        return this.serializedBoard;
+    }
+
+    public void setSerializedBoard() {
+        try {
+            this.serializedBoard = mapper.writeValueAsString(this.state);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @JoinColumn(name = "game_id")
+    @OneToOne
+    @JsonIgnore
+    private Game parent;
+
+    public Game getParent() {
+        return parent;
+    }
+
+    public void setParent(Game parent) {
+        this.parent = parent;
+    }
+
+    public Board(){
         this.state = new int[8][8];
 
         for (int y = 0; y < 8; y++) {
@@ -27,6 +85,8 @@ public class Board {
         this.state[5][3] = GamePiece.Possible;
         this.state[4][2] = GamePiece.Possible;
         this.state[3][5] = GamePiece.Possible;
+
+        setSerializedBoard();
     }
 
     public int getWhiteCount(){
@@ -49,7 +109,8 @@ public class Board {
         return counter;
     }
 
-    public int[][] getCurrentState(){
+
+    public int[][] getState(){
         return this.state;
     }
 
@@ -82,7 +143,6 @@ public class Board {
     public String toString(){
         StringBuilder builder = new StringBuilder();
 
-
         for (int y = 7; y >= 0; y--) {
             for (int x = 0; x < 8; x++) {
                 builder.append(state[x][y]);
@@ -93,7 +153,6 @@ public class Board {
             builder.append("\n");
 
         }
-
 
         return builder.toString();
     }

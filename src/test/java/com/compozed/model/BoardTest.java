@@ -1,11 +1,9 @@
 package com.compozed.model;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -21,7 +19,7 @@ public class BoardTest {
         assertEquals("New board should have 2 black pieces", 2, blackPieces);
         assertEquals("New board should have 2 white pieces", 2, whitePieces);
 
-        int[][] currentBoard = board.getCurrentState();
+        int[][] currentBoard = board.getState();
 
         assertEquals("New board should have black piece at 4,3", GamePiece.White, currentBoard[4][3]);
         assertEquals("New board should have black piece at 3,4", GamePiece.White, currentBoard[3][4]);
@@ -41,7 +39,7 @@ public class BoardTest {
 
         board.setPiece(GamePiece.Black, 2, 4);
 
-        int[][] currentBoard= board.getCurrentState();
+        int[][] currentBoard= board.getState();
 
         assertEquals("Set piece should change cell to specified piece", GamePiece.Black, currentBoard[2][4]);
     }

@@ -1,14 +1,46 @@
 package com.compozed.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
 
+@Entity
 public class Game {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user = new User();
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Board currentBoard;
+
     private int nextPlayer;
     private int gameWinner;
 
     public Game(){
         this.currentBoard = new Board();
+        this.currentBoard.setParent( this );
+
         this.nextPlayer = GamePiece.Black;
         this.gameWinner = GamePiece.Empty;
     }
@@ -19,6 +51,7 @@ public class Game {
 
     public void setCurrentBoard(Board currentBoard) {
         this.currentBoard = currentBoard;
+        currentBoard.setParent( this );
     }
 
     public void placePiece(int color, int xPosition, int yPosition) {
@@ -35,8 +68,11 @@ public class Game {
         nextPlayer = color == GamePiece.Black ? GamePiece.White : GamePiece.Black;
         gameWinner = currentBoard.checkForWinner();
         if (gameWinner == GamePiece.Empty){
-            findPossibleMoves( nextPlayer );
+            if (!findPossibleMoves()) {
+                nextPlayer = nextPlayer == GamePiece.Black ? GamePiece.White : GamePiece.Black;
+            }
         }
+        currentBoard.setSerializedBoard();
     }
 
     private boolean checkForFlip(int x, int y, boolean doFlip, int deltaX, int deltaY ){
@@ -81,13 +117,11 @@ public class Game {
         return needFlip;
     }
 
-    private void findPossibleMoves( int nextPlayer ) {
+    private boolean findPossibleMoves() {
+        boolean foundPossibleMove = false;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-//                System.out.print( "x = " + x + " y = " + y );
-//                if (x == 3 && y == 2){
-//                    System.out.println("coool");
-//                }
+
                 if( currentBoard.getPiece( x, y ) != GamePiece.Black && currentBoard.getPiece( x, y ) != GamePiece.White ) {
                     boolean canMove = checkForFlip(x, y, false, -1, 0);
                     canMove = checkForFlip(x, y, false, 0, -1) || canMove;
@@ -98,16 +132,20 @@ public class Game {
                     canMove = checkForFlip(x, y, false, -1, 1) || canMove;
                     canMove = checkForFlip(x, y, false, 1, -1) || canMove;
                     if( canMove ) {
-//                        System.out.println( " can move" );
                         currentBoard.setPiece( GamePiece.Possible, x, y );
+                        foundPossibleMove = true;
                     }
                     else {
-//                        System.out.println( " cannot move" );
                         currentBoard.setPiece( GamePiece.Empty, x, y );
                     }
                 }
             }
         }
+        return foundPossibleMove;
+    }
+
+    public int getNextPlayer() {
+        return nextPlayer;
     }
 }
 

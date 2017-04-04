@@ -1,6 +1,5 @@
 package com.compozed.model;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +15,6 @@ public class GameTest {
     @Test
     public void testInitialGameHasBoard() {
         Game game = new Game();
-        Board currentBoard = game.getCurrentBoard();
-//        System.out.println(currentBoard.toString());
 
         assertNotNull(game.getCurrentBoard());
     }
@@ -28,9 +25,8 @@ public class GameTest {
         game.placePiece(GamePiece.Black, 2, 4);
 
         Board currentBoard = game.getCurrentBoard();
-        int[][] board = currentBoard.getCurrentState();
+        int[][] board = currentBoard.getState();
 
-//        System.out.println( currentBoard.toString() );
         assertEquals("New board should have 4 black pieces", 4, currentBoard.getBlackCount());
         assertEquals("New board should have 1 white piece", 1, currentBoard.getWhiteCount());
         assertEquals("Cell 2,4 should contain a black piece", GamePiece.Black, board[2][4]);
@@ -88,7 +84,7 @@ public class GameTest {
                 currentBoard.setPiece(GamePiece.White, x, y);
             }
         }
-        
+
         currentBoard.setPiece(GamePiece.Black, 0, 0);
         currentBoard.setPiece(GamePiece.Empty, 7, 7);
 
@@ -97,5 +93,34 @@ public class GameTest {
         assertEquals("White should win", GamePiece.White, game.getWinner());
 
     }
+
+    @Test
+    public void testPlayerPassesIfNoPossibleMoves() {
+        Game game = new Game();
+        Board currentBoard = game.getCurrentBoard();
+
+        game.placePiece(GamePiece.Black, 2, 4);
+
+        assertEquals("No winner right after board is initialized", GamePiece.Empty, game.getWinner());
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                currentBoard.setPiece(GamePiece.White, x, y);
+            }
+        }
+
+        currentBoard.setPiece(GamePiece.Black, 7, 2);
+        currentBoard.setPiece(GamePiece.Black, 6, 0);
+        currentBoard.setPiece(GamePiece.Empty, 7, 0);
+        currentBoard.setPiece(GamePiece.Empty, 7, 1);
+
+        assertEquals("White should be next player", GamePiece.White, game.getNextPlayer());
+        System.out.println(currentBoard.toString());
+
+        game.placePiece(GamePiece.White, 7, 1);
+
+        assertEquals("White should be next player after black passes", GamePiece.White, game.getNextPlayer());
+
+    }
+
 }
 
