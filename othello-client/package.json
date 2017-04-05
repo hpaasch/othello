@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "enzyme": "^2.8.0",
+    "fetch-mock": "^5.9.4",
     "react-addons-test-utils": "^15.4.2",
     "react-scripts": "0.9.5"
   },
