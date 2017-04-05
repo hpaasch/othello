@@ -41,7 +41,18 @@ public class Board {
     @JsonIgnore
     private int[][] state;
 
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private GameMove lastPiecePlaced = null;
+
     private String serializedBoard;
+
+    public GameMove getLastPiecePlaced() {
+        return lastPiecePlaced;
+    }
+
+    public void setLastPiecePlaced(GameMove lastPiecePlaced) {
+        this.lastPiecePlaced = lastPiecePlaced;
+    }
 
     public String getSerializedBoard() throws Exception{
         return this.serializedBoard;
@@ -144,12 +155,9 @@ public class Board {
     public Board clone() {
         Board board = new Board();
 
-        System.out.println( "Board: " + this.toString() );
         this.setSerializedBoard();
-        System.out.println( "Serialized board: " + board.serializedBoard );
         board.serializedBoard = this.serializedBoard;
         board.setState();
-        System.out.println( "New Board: " + board.toString() );
 
         return board;
     }

@@ -1,9 +1,31 @@
 package com.compozed.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+
+@Entity
 public class GameMove {
     private int color;
     private int xPosition;
     private int yPosition;
+
+    @Id
+    @GeneratedValue( strategy =  GenerationType.AUTO )
+    Long id;
+
+    @JoinColumn(name = "board_id")
+    @OneToOne
+    @JsonIgnore
+    private Board board;
+
+    public GameMove() {}
+
+    public GameMove( int color, int xPosition, int yPosition ) {
+        this.color = color;
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
+    }
 
     public int getColor() {
         return color;

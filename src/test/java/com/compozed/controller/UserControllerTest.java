@@ -32,7 +32,7 @@ public class UserControllerTest {
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void testShouldRegisterNewUser() throws Exception{
+    public void testShouldRegisterNewUser() throws Exception {
         User user = new User();
         user.setEmail("tjkomor@clemson.edu");
         user.setPassword("password");
@@ -48,5 +48,46 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.nextPlayer", equalTo(2)))
                 .andExpect(jsonPath("$.winner", equalTo(0)))
                 .andExpect(jsonPath("$.id", isA(Integer.class)));
+    }
+
+    @Test
+    public void testUserCanLogin() throws Exception {
+        User user = new User();
+        user.setEmail("tjkomor@clemson.edu");
+        user.setPassword("password");
+
+
+        MockHttpServletRequestBuilder request = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(user));
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder login = post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(user));
+
+        this.mockMvc.perform(login)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nextPlayer", equalTo(2)))
+                .andExpect(jsonPath("$.winner", equalTo(0)))
+                .andExpect(jsonPath("$.id", isA(Integer.class)));
+
+    }
+
+    @Test
+    public void testBadUserCannotLogin() throws Exception {
+        User user = new User();
+        user.setEmail("abc1234@junk.com");
+        user.setPassword("password");
+
+
+        MockHttpServletRequestBuilder login = post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(user));
+
+        this.mockMvc.perform(login)
+                .andExpect(status().isNoContent());
     }
 }

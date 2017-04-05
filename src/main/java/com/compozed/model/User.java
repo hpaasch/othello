@@ -45,4 +45,18 @@ public class User {
         this.gameList.add(game);
     }
 
+    public String toString() {
+        StringBuilder builder = new StringBuilder( "User: " );
+        builder.append( "id: " );
+        builder.append( id );
+        builder.append( " email: " );
+        builder.append( email );
+        builder.append( " password: " );
+        builder.append( password );
+        builder.append( " game count: " );
+        builder.append( gameList.size() );
+
+        return builder.toString();
+    }
+
 }

@@ -89,6 +89,8 @@ public class Game {
                 nextPlayer = nextPlayer == GamePiece.Black ? GamePiece.White : GamePiece.Black;
             }
         }
+
+        currentBoard.setLastPiecePlaced( new GameMove( color, xPosition, yPosition ));
         currentBoard.setSerializedBoard();
     }
 
@@ -163,6 +165,16 @@ public class Game {
 
     public int getNextPlayer() {
         return nextPlayer;
+    }
+
+    public void undo(){
+        this.nextPlayer = this.currentBoard.getLastPiecePlaced().getColor();
+        this.currentBoard = this.getHistory().get(this.getHistory().size() - 1);
+        this.getHistory().remove(this.getHistory().size() - 1);
+    }
+
+    public void redo( int xPosition, int yPosition ) {
+        this.placePiece( this.nextPlayer, xPosition, yPosition );
     }
 }
 
