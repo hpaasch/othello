@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import com.sendgrid.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("")
@@ -38,17 +40,17 @@ public class UserController {
         Content content = new Content("text/plain", "Hello, Welcome");
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
-        Request request = new Request();
-        try {
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = mail.build();
-            Response response = sg.api(request);
-        } catch (IOException ex) {
-            throw ex;
-        }
-
+//        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+//        Request request = new Request();
+//        try {
+//            request.method = Method.POST;
+//            request.endpoint = "mail/send";
+//            request.body = mail.build();
+//            Response response = sg.api(request);
+//        } catch (IOException ex) {
+//            throw ex;
+//        }
+//
 
         return game;
     }
@@ -71,4 +73,23 @@ public class UserController {
 
         throw new UserNotFoundException();
     }
+
+    @GetMapping("/users/{id}/games")
+    public List<Game> getGameList(@PathVariable int id) {
+        List<Game> result = new ArrayList<>();
+        System.out.println( "getGameList: entry" );
+        Iterable<Game> games = gameRepository.findAll();
+        for ( Game game: games ) {
+            System.out.println( "Found game: " + game.getId() );
+            if( game.getUser().getId() == id ) {
+                result.add( game );
+            }
+        }
+        System.out.println( "Game count: " + result.size());
+
+        return result;
+    }
+
+
+
 }
