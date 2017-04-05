@@ -16,6 +16,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -85,4 +88,6 @@ public class GameControllerTest {
 
         assertEquals(GamePiece.Possible, savedGame.getCurrentBoard().getState()[2][5] );
     }
+
+
 }
