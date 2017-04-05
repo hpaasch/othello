@@ -1,7 +1,9 @@
 package com.compozed.controller;
 
+import com.compozed.exception.UserNotFoundException;
 import com.compozed.model.Game;
 import com.compozed.model.User;
+import com.compozed.repository.GameRepository;
 import com.compozed.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +13,19 @@ import com.sendgrid.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("")
 public class UserController {
     private final UserRepository repository;
+    private final GameRepository gameRepository;
 
     ObjectMapper mapper = new ObjectMapper();
 
-    public UserController(UserRepository repository) {
+    public UserController(UserRepository repository, GameRepository gameRepository) {
         this.repository = repository;
+        this.gameRepository = gameRepository;
     }
 
-    @PostMapping("")
+    @PostMapping("/users")
     public Game register(@RequestBody User user) throws Exception{
         Game game = new Game();
         game.setUser(user);
@@ -41,14 +45,30 @@ public class UserController {
             request.endpoint = "mail/send";
             request.body = mail.build();
             Response response = sg.api(request);
-            System.out.println(response.statusCode);
-            System.out.println(response.body);
-            System.out.println(response.headers);
         } catch (IOException ex) {
             throw ex;
         }
 
 
         return game;
+    }
+
+    @PostMapping("/login")
+    public Game login(@RequestBody User user) throws Exception {
+        Iterable<User> users = repository.findAll();
+        for (User knownUser: users) {
+            if( knownUser.getEmail().contentEquals(user.getEmail()) && knownUser.getPassword().contentEquals(user.getPassword()) ) {
+                Game game = new Game();
+                game.setUser(knownUser);
+                gameRepository.save( game );
+
+                knownUser.addGame(game);
+                repository.save( knownUser );
+
+                return game;
+            }
+        }
+
+        throw new UserNotFoundException();
     }
 }

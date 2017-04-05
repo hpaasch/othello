@@ -18,7 +18,7 @@ public class User {
         this.gameList = gameList;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Game> gameList = new ArrayList<>();
 
 
@@ -43,6 +43,20 @@ public class User {
 
     public void addGame(Game game){
         this.gameList.add(game);
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder( "User: " );
+        builder.append( "id: " );
+        builder.append( id );
+        builder.append( " email: " );
+        builder.append( email );
+        builder.append( " password: " );
+        builder.append( password );
+        builder.append( " game count: " );
+        builder.append( gameList.size() );
+
+        return builder.toString();
     }
 
 }

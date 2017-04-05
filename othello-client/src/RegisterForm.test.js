@@ -10,8 +10,7 @@ describe('Register Form', () => {
     const form = registerForm.find('form')
     const button = registerForm.find('button')
 
-    expect(inputs).toHaveLength(2)
+    expect(inputs).toHaveLength(3)
     expect(form).toHaveLength(1)
-    expect(button).toHaveLength(1)
   })
 });

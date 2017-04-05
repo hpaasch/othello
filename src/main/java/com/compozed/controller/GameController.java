@@ -22,8 +22,16 @@ public class GameController {
         Game game = repository.findOne( id );
         game.placePiece( move.getColor(), move.getxPosition(), move.getyPosition() );
 
-        System.out.println(mapper.writeValueAsString(game));
+        return repository.save( game );
+    }
+
+    @DeleteMapping("{id}")
+    public Game undo(@PathVariable Long id) throws Exception{
+        Game game = repository.findOne( id );
+        game.undo();
 
         return repository.save( game );
     }
+
+
 }

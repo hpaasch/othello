@@ -7,6 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -49,7 +50,6 @@ public class GameTest {
         Board currentBoard = game.getCurrentBoard();
         game.placePiece(GamePiece.Black, 2, 4);
 
-        System.out.println(currentBoard.toString());
         assertEquals("Cell 5,2 is a possible move for white", GamePiece.Possible, currentBoard.getPiece(2,5));
         assertEquals("Cell 5,3 is a possible move for white", GamePiece.Possible, currentBoard.getPiece(2,3));
         assertEquals("Cell 5,4 is a possible move for white", GamePiece.Possible, currentBoard.getPiece(4,5));
@@ -114,7 +114,6 @@ public class GameTest {
         currentBoard.setPiece(GamePiece.Empty, 7, 1);
 
         assertEquals("White should be next player", GamePiece.White, game.getNextPlayer());
-        System.out.println(currentBoard.toString());
 
         game.placePiece(GamePiece.White, 7, 1);
 
@@ -133,6 +132,49 @@ public class GameTest {
 
         assertEquals( "first element in history should not know about first move", 0, game.getHistory().get(0).getState()[2][5] );
         assertEquals( "second element in history should know about first move", 3, game.getHistory().get(1).getState()[2][5] );
+    }
+
+    @Test
+    public void testUndoLastMoveShouldReturnPreviousMove() throws Exception {
+        Game game = new Game();
+        game.placePiece( GamePiece.Black, 2, 4 );
+        game.placePiece( GamePiece.White, 2, 5 );
+
+        game.undo();
+
+        assertEquals( "current board should return possible move at 2,5", GamePiece.Possible, game.getCurrentBoard().getState()[2][5] );
+        assertEquals( "next player should be white", GamePiece.White, game.getNextPlayer() );
+
+    }
+
+    @Test
+    public void testRedoShouldReturnPreviouslyUndidMove() throws Exception {
+        Game game = new Game();
+        game.placePiece( GamePiece.Black, 2, 4 );
+        game.placePiece( GamePiece.White, 2, 5 );
+
+        game.undo();
+        game.redo(2,5);
+
+        assertEquals(game.getCurrentBoard().getLastPiecePlaced().getxPosition(), 2);
+        assertEquals(game.getCurrentBoard().getLastPiecePlaced().getyPosition(), 5);
+        assertEquals(game.getCurrentBoard().getLastPiecePlaced().getColor(), GamePiece.White);
+        assertEquals( "next player should be black", GamePiece.Black, game.getNextPlayer() );
+
+    }
+
+    @Test
+    public void testBoardKnowsLastGameMove() {
+        Game game = new Game();
+        assertNull("initial board has no piece placed", game.getCurrentBoard().getLastPiecePlaced());
+
+        game.placePiece(GamePiece.Black, 2, 4);
+        game.placePiece( GamePiece.White, 2, 5 );
+
+        assertEquals(game.getCurrentBoard().getLastPiecePlaced().getxPosition(), 2);
+        assertEquals(game.getCurrentBoard().getLastPiecePlaced().getyPosition(), 5);
+        assertEquals(game.getCurrentBoard().getLastPiecePlaced().getColor(), GamePiece.White);
+
     }
 
 }
