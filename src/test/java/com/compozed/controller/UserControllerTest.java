@@ -34,7 +34,7 @@ public class UserControllerTest {
     @Test
     public void testShouldRegisterNewUser() throws Exception{
         User user = new User();
-        user.setEmail("us@youandme.com");
+        user.setEmail("tjkomor@clemson.edu");
         user.setPassword("password");
 
 
