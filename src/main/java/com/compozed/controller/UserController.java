@@ -91,5 +91,30 @@ public class UserController {
     }
 
 
+    @PostMapping("/recover")
+    public void recoverPassword(@RequestBody User user) throws Exception{
+        String email = user.getEmail();
+        Iterable<User> users = repository.findAll();
+        for ( User u: users ) {
+            if( u.getEmail().toLowerCase().contentEquals( user.getEmail().toLowerCase() )) {
+                Email from = new Email("othello@allstate.com");
+                String subject = "Password Recovery";
+                Email to = new Email(user.getEmail());
+                Content content = new Content("text/plain", "Your password is: " + u.getPassword() );
+                Mail mail = new Mail(from, subject, to, content);
+
+//                SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+//                Request request = new Request();
+//                try {
+//                    request.method = Method.POST;
+//                    request.endpoint = "mail/send";
+//                    request.body = mail.build();
+//                    Response response = sg.api(request);
+//                } catch (IOException ex) {
+//                    throw ex;
+//                }
+            }
+        }
+    }
 
 }

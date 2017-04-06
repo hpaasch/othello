@@ -3,7 +3,11 @@ package com.compozed.controller;
 import com.compozed.model.Board;
 import com.compozed.model.Game;
 import com.compozed.model.GamePiece;
+import com.compozed.model.User;
 import com.compozed.repository.GameRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.hibernate.annotations.SourceType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +42,7 @@ public class GameControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    ObjectMapper mapper = new ObjectMapper();
 
     @Test
     @Transactional
@@ -89,5 +95,58 @@ public class GameControllerTest {
         assertEquals(GamePiece.Possible, savedGame.getCurrentBoard().getState()[2][5] );
     }
 
+
+//    @Test
+//    @javax.transaction.Transactional
+//    @Rollback
+//    public void testUserCanLoadAGame() throws Exception {
+//        User user = new User();
+//        user.setEmail("abc1234@junk.com");
+//        user.setPassword("password");
+//
+//        MockHttpServletRequestBuilder request1 = post("/users")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(mapper.writeValueAsString(user));
+//
+//        this.mockMvc.perform(request1)
+//                .andExpect(status().isOk());
+//
+//        MockHttpServletRequestBuilder login = post("/login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(mapper.writeValueAsString(user));
+//
+//        this.mockMvc.perform(login)
+//                .andExpect(status().isOk());
+//
+//        MockHttpServletRequestBuilder request2 = get("/games/1")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 4}");
+//        this.mockMvc.perform(request2)
+//                .andExpect(status().isOk());
+//
+//        MockHttpServletRequestBuilder request3 = post("/games/2")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 4}");
+//        this.mockMvc.perform(request3)
+//                .andExpect(status().isOk());
+//
+//        user.setId(1L);
+//
+//        MvcResult result = this.mockMvc.perform(get("/users/" + user.getId() + "/games" ))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[1].id", isA(Integer.class)))
+//                .andReturn();
+//
+//        String content = result.getResponse().getContentAsString();
+//        System.out.println("Result content: " + content);
+//        JSONArray gamesArr = new JSONArray();
+//        JSONObject game = (JSONObject)gamesArr.get( 0 );
+//        System.out.println( game.toJSONString() );
+
+//        this.mockMvc.perform(get("/games/" + gameID ))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$[1].id", isA(Integer.class)));
+//
+//    }
 
 }

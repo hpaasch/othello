@@ -158,6 +158,7 @@ public class Board {
         this.setSerializedBoard();
         board.serializedBoard = this.serializedBoard;
         board.setState();
+        board.parent = this.parent;
 
         return board;
     }

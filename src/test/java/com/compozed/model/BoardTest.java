@@ -86,6 +86,7 @@ public class BoardTest {
         assertNotEquals("Clone board has different mem location", board, board2);
 
         assertEquals("Board clone should have identical pieces", board.getPiece(3,3), board2.getPiece(3,3));
+
     }
 
 

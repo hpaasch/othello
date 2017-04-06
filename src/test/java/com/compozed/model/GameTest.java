@@ -5,9 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -176,6 +174,17 @@ public class GameTest {
         assertEquals(game.getCurrentBoard().getLastPiecePlaced().getColor(), GamePiece.White);
 
     }
+
+    @Test
+    public void testGameCloneMaintainsParentIntegrity() {
+        Game game = new Game();
+        game.placePiece(GamePiece.Black, 2, 4);
+
+        assertEquals(game.getHistory().get(0).getParent().getId(), game.getCurrentBoard().getParent().getId() );
+
+
+    }
+
 
 }
 

@@ -88,6 +88,29 @@ public class UserControllerTest {
 //
 //    }
 
+        @Test
+    public void testUserCanRecoverPassword() throws Exception {
+        User user = new User();
+        user.setEmail("tjkomor@clemson.edu");
+        user.setPassword("password");
+
+
+        MockHttpServletRequestBuilder request = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(user));
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder login = post("/recover")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"email\": \"" + user.getEmail() + "\" }" );
+
+        this.mockMvc.perform(login)
+                .andExpect(status().isOk());
+    }
+
+
     @Test
     public void testBadUserCannotLogin() throws Exception {
         User user = new User();
@@ -124,8 +147,6 @@ public class UserControllerTest {
 
         this.mockMvc.perform(login)
                 .andExpect(status().isOk());
-
-        Game game = new Game();
 
         MockHttpServletRequestBuilder request2 = post("/games/1")
                 .contentType(MediaType.APPLICATION_JSON)
