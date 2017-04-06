@@ -26,14 +26,27 @@ export default class Game extends Component {
   }
 
   render() {
-    return(
-      <div className="gameContainer">
-        <h1 className="formHeader" id="gameHeader">Welcome to Othello!</h1>
-        {this.game}
-        <button>Undo</button>
-        <button>Redo</button>
-      </div>
-    )
+
+    if(this.props.container === "Game") {
+      return (
+        <div>
+          <h1 id="gameHeader">Welcome to Othello!</h1>
+          <div className="gameContainer">
+            {this.game}
+
+          </div>
+
+        </div>
+
+      )
+    }
+    else {
+      return(
+        <div className="gameHistory">
+          {this.game}
+        </div>
+      )
+    }
 
   }
 

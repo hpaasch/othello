@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  box-sizing: border-box;
 }
 
 .App-logo {
@@ -24,17 +25,31 @@
 }
 
 .gameContainer {
-  width: 816px;
-  height: 816px;
+  width: 700px;
+  height: 700px;
+  float: left;
+}
+
+.gameHistory {
+  width: 150px;
+  height: 150px;
+
 }
 
 .cellDivs {
-  width: 100px;
-  height: 100px;
-  border: 1px solid #FFF;
+  width: 11%;
+  height: 11%;
+  border: 1px solid #fff;
   display: inline-block;
   background-color: #468847;
+}
+
+.gameContainer > .cellDivs {
   margin-bottom: -3px;
+}
+
+.gameHistory > .cellDivs {
+  margin-bottom: -5px;
 }
 
 .blackPiece {
@@ -42,8 +57,8 @@
   background-color: black;
   height: 90%;
   width: 90%;
-  margin-top: 4px;
-  margin-left: 4px;
+  margin-top: 4%;
+  margin-left: 6%;
 }
 
 .whitePiece {
@@ -51,8 +66,8 @@
   background-color: white;
   height: 90%;
   width: 90%;
-  margin-top: 4px;
-  margin-left: 4px;
+  margin-top: 4%;
+  margin-left: 6%;
 }
 
 .possiblePiece {
@@ -60,8 +75,69 @@
   background-color: #343d46;
   height: 25%;
   width: 25%;
-  margin: auto;
-  margin-top: 37px;
+  margin-top: 40%;
+  margin-left: 37%;
+}
+
+.gameDashboard {
+  display: flex;
+  flex-direction: row;
 }
 
 
+.blackPieceScoreCounter {
+  border-radius: 50%;
+  background-color: black;
+  height: 75px;
+  width: 75px;
+  display: inline-block;
+}
+
+.whitePieceScoreCounter {
+  border-radius: 50%;
+  background-color: white;
+  height: 75px;
+  width: 75px;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.playerScore {
+  margin-top: 300px;
+  margin-left: 100px;
+}
+
+.pieceCount {
+  display: inline-block;
+  position: relative;
+  top: -26px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  font-size: 1.7em;
+}
+
+#undoRedoButton {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#undoRedoButton {
+  background-color: white;
+  color: black;
+  border: 2px solid #4CAF50;
+}
+
+#undoRedoButton:hover {
+  background-color: #4CAF50;
+  color: white;
+}
