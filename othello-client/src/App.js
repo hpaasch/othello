@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import Game from './Game'
+import Game from './Game';
+import GameHistory from './GameHistory';
 
 class App extends Component {
 
@@ -12,13 +13,14 @@ class App extends Component {
     this.state = {
       mode: "Login",
       game: null,
-      latestMove: null
+      latestMove: null,
+      undoRedoValue: 'Undo'
 
     }
     this.register = this.register.bind(this);
     this.submitForm = this.submitForm.bind(this);
-    // this.postUser = this.postUser.bind(this);
     this.postMove = this.postMove.bind(this);
+    this.undoRedo = this.undoRedo.bind(this);
   }
 
   register(){
@@ -51,27 +53,7 @@ class App extends Component {
 
   }
 
-  // postUser(user){
-  //   console.log("YOOOO IN POST ")
-  //   let route = "/login";
-  //
-  //   if (this.state.mode === "Register") {
-  //     route = "/users"
-  //   }
-  //   let headers = new Headers();
-  //   headers.append("Content-Type", "application/json");
-  //   let init = {method: 'POST', headers: headers, body: user };
-  //   console.log("Stringify: ", JSON.stringify( user ))
-  //   return fetch(route, init)
-  //     .then( (response) => response.json() )
-  //     .then( (game) => {
-  //       console.log("GAME: ", game)
-  //       this.setState({mode: "Game"})
-  //     });
-  // }
-
   postMove(event){
-    //TODO
     const game = this.state.game;
     if(event.target.className === "possiblePiece"){
 
@@ -87,10 +69,10 @@ class App extends Component {
       }
     }
 
+
   }
 
   submitMove(color, xPos, yPos){
-
     const payload = {'color': color, 'xPosition': xPos, 'yPosition': yPos }
     let route = "/games/" + this.state.game.id;
 
@@ -102,8 +84,26 @@ class App extends Component {
       .then( (response) => response.json() )
       .then( (game) => {
         console.log("GAME: ", game)
-        this.setState({mode: "Game", game: game})
+        this.setState({mode: "Game", game: game, latestMove: payload})
       });
+  }
+
+  undoRedo(){
+    if(this.state.undoRedoValue === "Undo") {
+      console.log("We clicked undo")
+      let init = {method: 'DELETE'};
+      let route = "/games/" + this.state.game.id;
+      return fetch(route, init)
+        .then((response) => response.json())
+        .then((game) => {
+          console.log("GAME: ", game)
+          this.setState({mode: "Game", game: game, undoRedoValue: 'Redo'})
+        });
+    }
+    else if(this.state.undoRedoValue === "Redo"){
+      this.submitMove(this.latestMove['color'], this.latestMove['xPosition'], this.latestMove['yPosition'])
+      this.setState({undoRedoValue: 'Undo'})
+    }
   }
 
   get display(){
@@ -113,7 +113,21 @@ class App extends Component {
 
       case "game":
         console.log(this.state.game.currentBoard)
-        return (<Game currentBoard={JSON.parse(this.state.game.currentBoard['serializedBoard'])} makeMove={this.postMove}/>)
+        return (
+          <div className="gameDashboard">
+
+
+
+            <GameHistory container="History" board={JSON.parse(this.state.game.currentBoard['serializedBoard'])}/>
+
+            <Game container="Game" currentBoard={JSON.parse(this.state.game.currentBoard['serializedBoard'])} makeMove={this.postMove} undoRedo={this.undoRedo} undoRedoValue={this.state.undoRedoValue}/>
+
+            <div className="playerScore">
+              <div className="blackPieceScoreCounter"></div><span className="pieceCount">X {this.state.game.currentBoard.blackCount}</span><br/>
+              <div className="whitePieceScoreCounter"></div><span className="pieceCount">X {this.state.game.currentBoard.whiteCount}</span><br/>
+              <button id="undoRedoButton" onClick={this.undoRedo}>{this.state.undoRedoValue}</button>
+            </div>
+          </div>)
 
       default:
         return (<LoginForm registerClick={this.register} onSubmit={this.submitForm}/>)
@@ -123,8 +137,8 @@ class App extends Component {
 
   render() {
     return (
-      <div class="rootApp">
-        {this.display}
+      <div className="App">
+          {this.display}
       </div>
     );
   }
