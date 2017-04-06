@@ -90,6 +90,7 @@ public class Game {
         if (gameWinner == GamePiece.Empty){
             if (!findPossibleMoves()) {
                 nextPlayer = nextPlayer == GamePiece.Black ? GamePiece.White : GamePiece.Black;
+                findPossibleMoves();
             }
         }
 

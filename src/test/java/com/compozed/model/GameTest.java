@@ -176,5 +176,18 @@ public class GameTest {
 
 //        assertEquals(game.getHistory().get(0).getParent().getId(), game.getCurrentBoard().getParent().getId() );
     }
+
+    @Test
+    public void testGameWillNotPutPieceInCorner() throws Exception {
+        Game game = new Game();
+        Board board = new Board("[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 1, 2, 3, 0, 0], [0, 2, 2, 2, 2, 2, 0, 0], [3, 3, 3, 3, 3, 3, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]");
+        game.setCurrentBoard(board);
+        System.out.println(board.toString());
+
+        game.placePiece(GamePiece.White, 5, 2);
+        System.out.println(game.getCurrentBoard().toString());
+//        assertEquals(game.getHistory().get(0).getParent().getId(), game.getCurrentBoard().getParent().getId() );
+    }
+
 }
 
