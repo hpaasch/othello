@@ -36,9 +36,9 @@ public class Game {
     @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Board currentBoard;
 
-    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<Board> history = new ArrayList<>();
+//    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JsonIgnore
+//    private List<Board> history = new ArrayList<>();
 
     private int nextPlayer;
     private int gameWinner;
@@ -51,13 +51,13 @@ public class Game {
         this.gameWinner = GamePiece.Empty;
     }
 
-    public List<Board> getHistory() {
-        return history;
-    }
+//    public List<Board> getHistory() {
+//        return history;
+//    }
 
-    public void setHistory(List<Board> history) {
-        this.history = history;
-    }
+//    public void setHistory(List<Board> history) {
+//        this.history = history;
+//    }
 
     public Board getCurrentBoard() {
         return currentBoard;
@@ -70,7 +70,7 @@ public class Game {
 
     public void placePiece(int color, int xPosition, int yPosition) {
         Board copyOfBoard = currentBoard.clone();
-        history.add(copyOfBoard);
+//        history.add(copyOfBoard);
 
         currentBoard.setPiece(color, xPosition, yPosition);
         flipIfNeeded(xPosition, yPosition, -1, 0);
@@ -169,8 +169,8 @@ public class Game {
 
     public void undo(){
         this.nextPlayer = this.currentBoard.getLastPiecePlaced().getColor();
-        this.currentBoard = this.getHistory().get(this.getHistory().size() - 1);
-        this.getHistory().remove(this.getHistory().size() - 1);
+//        this.currentBoard = this.getHistory().get(this.getHistory().size() - 1);
+//        this.getHistory().remove(this.getHistory().size() - 1);
     }
 
     public void redo( int xPosition, int yPosition ) {

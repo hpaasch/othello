@@ -113,7 +113,7 @@ public class UserControllerTest {
     @Test
     public void testBadUserCannotLogin() throws Exception {
         User user = new User();
-        user.setEmail("abc1234@junk.com");
+        user.setEmail("abc12345@junk.com");
         user.setPassword("password");
 
 

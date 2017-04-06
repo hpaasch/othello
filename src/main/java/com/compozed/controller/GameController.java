@@ -19,7 +19,9 @@ public class GameController {
 
     @PostMapping("{id}")
     public Game playMove(@PathVariable Long id, @RequestBody GameMove move) throws Exception{
+        System.out.println("ID"+ id);
         Game game = repository.findOne( id );
+        System.out.println("GAME"+ game.getCurrentBoard().getSerializedBoard());
         game.placePiece( move.getColor(), move.getxPosition(), move.getyPosition() );
 
         return repository.save( game );

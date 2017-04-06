@@ -75,11 +75,11 @@ public class Board {
         this.parent = parent;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "history_id")
-    @JsonIgnore
-    private Game history = null;
-
+//    @ManyToOne
+//    @JoinColumn(name = "history_id")
+//    @JsonIgnore
+//    private Game history = null;
+//
     public Board(){
         this.state = new int[8][8];
 
