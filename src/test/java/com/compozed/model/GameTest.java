@@ -89,6 +89,8 @@ public class GameTest {
         currentBoard.setPiece(GamePiece.Black, 0, 0);
         currentBoard.setPiece(GamePiece.Empty, 7, 7);
 
+        game.getCurrentBoard().setSerializedBoard();
+
         game.placePiece(GamePiece.Black, 7, 7);
 
         assertEquals("White should win", GamePiece.White, game.getWinner());
@@ -113,6 +115,8 @@ public class GameTest {
         currentBoard.setPiece(GamePiece.Black, 6, 0);
         currentBoard.setPiece(GamePiece.Empty, 7, 0);
         currentBoard.setPiece(GamePiece.Empty, 7, 1);
+
+        game.getCurrentBoard().setSerializedBoard();
 
         assertEquals("White should be next player", GamePiece.White, game.getNextPlayer());
 

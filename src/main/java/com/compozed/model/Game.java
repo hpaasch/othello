@@ -69,6 +69,8 @@ public class Game {
     }
 
     public void placePiece(int color, int xPosition, int yPosition) {
+        getCurrentBoard().setState();
+
         Board copyOfBoard = currentBoard.clone();
 //        history.add(copyOfBoard);
 
