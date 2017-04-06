@@ -6,9 +6,7 @@ import com.compozed.model.GamePiece;
 import com.compozed.model.User;
 import com.compozed.repository.GameRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import org.hibernate.annotations.SourceType;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -56,33 +52,39 @@ public class GameControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user));
 
-        this.mockMvc.perform(request1)
-                .andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(request1)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject response = new JSONObject( result.getResponse().getContentAsString() );
+        JSONObject game = response.getJSONObject( "game" );
+        int gameID = game.getInt("id");
 
         MockHttpServletRequestBuilder login = post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user));
 
         this.mockMvc.perform(login)
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
-        MockHttpServletRequestBuilder request2 = post("/games/1")
+        MockHttpServletRequestBuilder request2 = post("/games/" + gameID )
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 4}");
-//        this.mockMvc.perform(request2)
-//                .andExpect(status().isOk());
-//
-//        request2 = post("/games/1")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content("{\"color\": 1, \"xPosition\": 2, \"yPosition\": 5}");
-//        this.mockMvc.perform(request2)
-//                .andExpect(status().isOk());
-//
-//        request2 = post("/games/1")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 6}");
-//        this.mockMvc.perform(request2)
-//                .andExpect(status().isOk());
+        this.mockMvc.perform(request2)
+                .andExpect(status().isOk());
+
+        request2 = post("/games/" + gameID )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\": 1, \"xPosition\": 2, \"yPosition\": 5}");
+        this.mockMvc.perform(request2)
+                .andExpect(status().isOk());
+
+        request2 = post("/games/" + gameID )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 6}");
+        this.mockMvc.perform(request2)
+                .andExpect(status().isOk());
 //
 //        MockHttpServletRequestBuilder request3 = post("/games/2")
 //                .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +150,7 @@ public class GameControllerTest {
         game.placePiece( GamePiece.Black, 2, 4 );
 
         game.placePiece( GamePiece.White, 2, 5 );
-        gameRepository.save(game);
+        game = gameRepository.save(game);
 
         MockHttpServletRequestBuilder request = delete("/games/" + game.getId());
 

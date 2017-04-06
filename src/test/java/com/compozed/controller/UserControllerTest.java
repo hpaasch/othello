@@ -7,6 +7,7 @@ import com.compozed.repository.GameRepository;
 import com.compozed.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.transaction.Transactional;
@@ -130,41 +132,55 @@ public class UserControllerTest {
     @Rollback
     public void testUserCanAccessListOfAllGamesPlayed() throws Exception {
         User user = new User();
-        user.setEmail("abc1234@junk.com");
+        user.setEmail("bbc1234@junk.com");
         user.setPassword("password");
 
         MockHttpServletRequestBuilder request1 = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user));
 
-        this.mockMvc.perform(request1)
-                .andExpect(status().isOk());
+        MvcResult result = this.mockMvc.perform(request1)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject response = new JSONObject( result.getResponse().getContentAsString() );
+        JSONObject game = response.getJSONObject("game");
+
+        int userID = response.getInt("userID");
+        int gameID = game.getInt("id");
 
         MockHttpServletRequestBuilder login = post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(user));
 
-        this.mockMvc.perform(login)
-                .andExpect(status().isOk());
 
-        MockHttpServletRequestBuilder request2 = post("/games/1")
+        MvcResult result2 =this.mockMvc.perform(login)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject response2 = new JSONObject( result2.getResponse().getContentAsString() );
+        JSONObject game2 = response2.getJSONObject("game");
+
+        int gameID2 = game2.getInt("id");
+
+
+        MockHttpServletRequestBuilder request2 = post("/games/" + gameID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 4}");
         this.mockMvc.perform(request2)
                 .andExpect(status().isOk());
 
-        MockHttpServletRequestBuilder request3 = post("/games/2")
+        MockHttpServletRequestBuilder request3 = post("/games/" + gameID2)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 4}");
         this.mockMvc.perform(request3)
                 .andExpect(status().isOk());
 
-        user.setId(1L);
-
-        this.mockMvc.perform(get("/users/" + user.getId() + "/games" ))
+        this.mockMvc.perform(get("/users/" + userID + "/games" ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[1].id", isA(Integer.class)));
 
+        System.out.println(result.getResponse().getContentAsString());
     }
 
 }

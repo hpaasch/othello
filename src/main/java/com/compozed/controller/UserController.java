@@ -2,6 +2,7 @@ package com.compozed.controller;
 
 import com.compozed.exception.UserNotFoundException;
 import com.compozed.model.Game;
+import com.compozed.model.GameResponse;
 import com.compozed.model.User;
 import com.compozed.repository.GameRepository;
 import com.compozed.repository.UserRepository;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public Game register(@RequestBody User user) throws Exception{
+    public GameResponse register(@RequestBody User user) throws Exception{
         Game game = new Game();
         game.setUser(user);
         user.addGame(game);
@@ -52,11 +53,12 @@ public class UserController {
 //        }
 //
 
-        return game;
+        GameResponse response = new GameResponse( game );
+        return response;
     }
 
     @PostMapping("/login")
-    public Game login(@RequestBody User user) throws Exception {
+    public GameResponse login(@RequestBody User user) throws Exception {
         Iterable<User> users = repository.findAll();
         for (User knownUser: users) {
             if( knownUser.getEmail().contentEquals(user.getEmail()) && knownUser.getPassword().contentEquals(user.getPassword()) ) {
@@ -67,7 +69,8 @@ public class UserController {
                 knownUser.addGame(game);
                 repository.save( knownUser );
 
-                return game;
+                GameResponse response = new GameResponse( game );
+                return response;
             }
         }
 
@@ -77,15 +80,12 @@ public class UserController {
     @GetMapping("/users/{id}/games")
     public List<Game> getGameList(@PathVariable int id) {
         List<Game> result = new ArrayList<>();
-        System.out.println( "getGameList: entry" );
         Iterable<Game> games = gameRepository.findAll();
         for ( Game game: games ) {
-            System.out.println( "Found game: " + game.getId() );
             if( game.getUser().getId() == id ) {
                 result.add( game );
             }
         }
-        System.out.println( "Game count: " + result.size());
 
         return result;
     }

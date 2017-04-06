@@ -36,9 +36,8 @@ public class Game {
     @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Board currentBoard;
 
-//    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JsonIgnore
-//    private List<Board> history = new ArrayList<>();
+    @OneToMany(mappedBy = "boardHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BoardHistory> boardHistory;
 
     private int nextPlayer;
     private int gameWinner;
@@ -49,15 +48,17 @@ public class Game {
 
         this.nextPlayer = GamePiece.Black;
         this.gameWinner = GamePiece.Empty;
+
+        this.boardHistory = new ArrayList<>();
     }
 
-//    public List<Board> getHistory() {
-//        return history;
-//    }
+    public List<BoardHistory> getHistory() {
+        return this.boardHistory;
+    }
 
-//    public void setHistory(List<Board> history) {
-//        this.history = history;
-//    }
+    public void setHistory(List<BoardHistory> boardHistory) {
+        this.boardHistory = boardHistory;
+    }
 
     public Board getCurrentBoard() {
         return currentBoard;
@@ -68,11 +69,11 @@ public class Game {
         currentBoard.setParent( this );
     }
 
-    public void placePiece(int color, int xPosition, int yPosition) {
+    public void placePiece(int color, int xPosition, int yPosition) throws Exception {
         getCurrentBoard().setState();
 
         Board copyOfBoard = currentBoard.clone();
-//        history.add(copyOfBoard);
+        addBoard(copyOfBoard);
 
         currentBoard.setPiece(color, xPosition, yPosition);
         flipIfNeeded(xPosition, yPosition, -1, 0);
@@ -175,8 +176,21 @@ public class Game {
 //        this.getHistory().remove(this.getHistory().size() - 1);
     }
 
-    public void redo( int xPosition, int yPosition ) {
+    public void redo( int xPosition, int yPosition ) throws Exception {
         this.placePiece( this.nextPlayer, xPosition, yPosition );
     }
+
+    public void addBoard( Board board ) throws Exception {
+        board.setSerializedBoard();
+        BoardHistory boardHistory = new BoardHistory( board.getSerializedBoard( ) );
+        this.boardHistory.add( boardHistory );
+    }
+//
+//    public int size(){
+//        return this.history.size();
+//    }
+//
+
+
 }
 

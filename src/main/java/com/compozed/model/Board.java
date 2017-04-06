@@ -63,7 +63,7 @@ public class Board {
     }
 
     @JoinColumn(name = "game_id")
-    @ManyToOne
+    @OneToOne
     @JsonIgnore
     private Game parent;
 
@@ -75,11 +75,6 @@ public class Board {
         this.parent = parent;
     }
 
-//    @ManyToOne
-//    @JoinColumn(name = "history_id")
-//    @JsonIgnore
-//    private Game history = null;
-//
     public Board(){
         this.state = new int[8][8];
 
@@ -102,6 +97,12 @@ public class Board {
         setSerializedBoard();
     }
 
+    public Board( String serializedBoard ) {
+        this.state = new int[8][8];
+        this.serializedBoard = serializedBoard;
+        setState();
+    }
+
     public int getWhiteCount(){
         int counter = 0;
         for (int y = 0; y < 8; y++) {
@@ -121,7 +122,6 @@ public class Board {
         }
         return counter;
     }
-
 
     public int[][] getState(){
         return this.state;

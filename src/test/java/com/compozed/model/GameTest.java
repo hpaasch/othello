@@ -19,7 +19,7 @@ public class GameTest {
     }
 
     @Test
-    public void testPlacePieceAndCaptures() {
+    public void testPlacePieceAndCaptures() throws Exception {
         Game game = new Game();
         game.placePiece(GamePiece.Black, 2, 4);
 
@@ -43,7 +43,7 @@ public class GameTest {
     }
 
     @Test
-    public void testFindPossibleMoves() {
+    public void testFindPossibleMoves() throws Exception {
         Game game = new Game();
         Board currentBoard = game.getCurrentBoard();
         game.placePiece(GamePiece.Black, 2, 4);
@@ -74,7 +74,7 @@ public class GameTest {
     }
 
     @Test
-    public void testCheckForWinnerAfterEveryTurn() {
+    public void testCheckForWinnerAfterEveryTurn() throws Exception {
         Game game = new Game();
         Board currentBoard = game.getCurrentBoard();
 
@@ -98,7 +98,7 @@ public class GameTest {
     }
 
     @Test
-    public void testPlayerPassesIfNoPossibleMoves() {
+    public void testPlayerPassesIfNoPossibleMoves() throws Exception {
         Game game = new Game();
         Board currentBoard = game.getCurrentBoard();
 
@@ -156,7 +156,7 @@ public class GameTest {
     }
 
     @Test
-    public void testBoardKnowsLastGameMove() {
+    public void testBoardKnowsLastGameMove() throws Exception {
         Game game = new Game();
         assertNull("initial board has no piece placed", game.getCurrentBoard().getLastPiecePlaced());
 
@@ -170,7 +170,7 @@ public class GameTest {
     }
 
     @Test
-    public void testGameCloneMaintainsParentIntegrity() {
+    public void testGameCloneMaintainsParentIntegrity() throws Exception {
         Game game = new Game();
         game.placePiece(GamePiece.Black, 2, 4);
 
