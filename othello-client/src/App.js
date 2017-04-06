@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       mode: "Login",
       game: null,
+      userID: 0,
       latestMove: null,
       undoRedoValue: 'Undo'
 
@@ -48,7 +49,7 @@ class App extends Component {
       .then( (response) => response.json() )
       .then( (game) => {
         console.log("GAME: ", game)
-        this.setState({mode: "Game", game: game})
+        this.setState({mode: "Game", game: game.game, userID: game.userID})
       });
 
   }
@@ -58,14 +59,16 @@ class App extends Component {
     if(event.target.className === "possiblePiece"){
 
       // console.log("My Parent is: ",event.target.parentNode)
-      console.log("Make move: ",event.target.parentNode.getAttribute('x')+ ", " + event.target.parentNode.getAttribute('y'))
+      console.log("Piece Make move: ",event.target.parentNode.getAttribute('x')+ ", " + event.target.parentNode.getAttribute('y'))
       this.submitMove(game.nextPlayer, event.target.parentNode.getAttribute('x'), event.target.parentNode.getAttribute('y') )
+      this.displayWinner();
     }
     else if(event.target.className === "cellDivs"){
       // console.log("My child is: ",event.target.children[0])
       if(event.target.children.length > 0 && event.target.children[0].className === "possiblePiece"){
-        console.log("Make move: ",event.target.getAttribute('x')+ ", " + event.target.getAttribute('y'))
-        this.submitMove(game.nextPlayer, event.target.parentNode.getAttribute('x'), event.target.parentNode.getAttribute('y') )
+        console.log("Div Make move: ",event.target.getAttribute('x')+ ", " + event.target.getAttribute('y'))
+        this.submitMove(game.nextPlayer, event.target.getAttribute('x'), event.target.getAttribute('y') )
+        this.displayWinner();
       }
     }
 
@@ -73,6 +76,7 @@ class App extends Component {
   }
 
   submitMove(color, xPos, yPos){
+
     const payload = {'color': color, 'xPosition': xPos, 'yPosition': yPos }
     let route = "/games/" + this.state.game.id;
 
@@ -85,7 +89,9 @@ class App extends Component {
       .then( (game) => {
         console.log("GAME: ", game)
         this.setState({mode: "Game", game: game, latestMove: payload})
+
       });
+
   }
 
   undoRedo(){
@@ -103,6 +109,22 @@ class App extends Component {
     else if(this.state.undoRedoValue === "Redo"){
       this.submitMove(this.latestMove['color'], this.latestMove['xPosition'], this.latestMove['yPosition'])
       this.setState({undoRedoValue: 'Undo'})
+    }
+  }
+
+  displayWinner(){
+    if(this.state.game.winner === 1){
+      var prompt = window.prompt("Congratulations, White player! You win!","(Optional) Leave a comment");
+      // Save last state of board to game history of current user
+    }
+    else if(this.state.game.winner === 2){
+      var prompt = window.prompt("Congratulations, Black player! You win!","(Optional) Leave a comment");
+    }
+    else if(this.state.game.winner === 4){
+      var prompt = window.prompt("You've tied!","(Optional) Leave a comment");
+    }
+    else {
+      console.log("No winner yet");
     }
   }
 
