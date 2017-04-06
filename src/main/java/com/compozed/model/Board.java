@@ -63,7 +63,7 @@ public class Board {
     }
 
     @JoinColumn(name = "game_id")
-    @OneToOne
+    @ManyToOne
     @JsonIgnore
     private Game parent;
 
