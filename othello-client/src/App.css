@@ -22,3 +22,46 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.gameContainer {
+  width: 816px;
+  height: 816px;
+}
+
+.cellDivs {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #FFF;
+  display: inline-block;
+  background-color: #468847;
+  margin-bottom: -3px;
+}
+
+.blackPiece {
+  border-radius: 50%;
+  background-color: black;
+  height: 90%;
+  width: 90%;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+.whitePiece {
+  border-radius: 50%;
+  background-color: white;
+  height: 90%;
+  width: 90%;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+.possiblePiece {
+  border-radius: 50%;
+  background-color: #343d46;
+  height: 25%;
+  width: 25%;
+  margin: auto;
+  margin-top: 37px;
+}
+
+

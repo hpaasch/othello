@@ -33,10 +33,10 @@ public class Game {
         this.id = id;
     }
 
-    @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Board currentBoard;
 
-    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "history", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Board> history = new ArrayList<>();
 

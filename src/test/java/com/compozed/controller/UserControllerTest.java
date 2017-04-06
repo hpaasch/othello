@@ -110,7 +110,6 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     public void testBadUserCannotLogin() throws Exception {
         User user = new User();

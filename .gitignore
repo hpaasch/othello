@@ -12,6 +12,9 @@
 .settings
 .springBeans
 
+# React artifacts
+src/main/resources/static
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -25,4 +28,3 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-.nb-gradle/sendgrid.env

@@ -27,7 +27,7 @@ public class User {
         this.gameList = gameList;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Game> gameList = new ArrayList<>();
 
     private String email;
