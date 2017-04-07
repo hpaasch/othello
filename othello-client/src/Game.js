@@ -31,6 +31,7 @@ export default class Game extends Component {
       return (
         <div>
           <h1 id="gameHeader">Welcome to Othello!</h1>
+          <h2 id="playerTurn">{this.props.nextPlayer}'s Turn</h2>
           <div className="gameContainer">
             {this.game}
 

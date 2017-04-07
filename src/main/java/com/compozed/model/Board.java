@@ -17,6 +17,36 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Transient
+    @JsonIgnore
+    private int[][] state;
+
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private GameMove lastPiecePlaced = null;
+
+    private String serializedBoard;
+
+    @JoinColumn(name = "game_id")
+    @OneToOne
+    @JsonIgnore
+    private Game parent;
+
+    public GameMove getLastPiecePlaced() {
+        return lastPiecePlaced;
+    }
+
+    public void setLastPiecePlaced(GameMove lastPiecePlaced) {
+        this.lastPiecePlaced = lastPiecePlaced;
+    }
+
+    public String getSerializedBoard() throws Exception{
+        return this.serializedBoard;
+    }
+
+    public void setSerializedBoard() {
+        this.serializedBoard = this.toJson();
+    }
+
     public void setState() {
         List<List<Integer>> stateArray = new ArrayList<>();
         try {
@@ -36,36 +66,6 @@ public class Board {
             e.printStackTrace();
         }
     }
-
-    @Transient
-    @JsonIgnore
-    private int[][] state;
-
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private GameMove lastPiecePlaced = null;
-
-    private String serializedBoard;
-
-    public GameMove getLastPiecePlaced() {
-        return lastPiecePlaced;
-    }
-
-    public void setLastPiecePlaced(GameMove lastPiecePlaced) {
-        this.lastPiecePlaced = lastPiecePlaced;
-    }
-
-    public String getSerializedBoard() throws Exception{
-        return this.serializedBoard;
-    }
-
-    public void setSerializedBoard() {
-        this.serializedBoard = this.toJson();
-    }
-
-    @JoinColumn(name = "game_id")
-    @OneToOne
-    @JsonIgnore
-    private Game parent;
 
     public Game getParent() {
         return parent;

@@ -17,6 +17,26 @@ public class Game {
     @JsonIgnore
     private User user = new User();
 
+    @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Board currentBoard;
+
+    @OneToMany(mappedBy = "boardHistory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<BoardHistory> boardHistory;
+
+    private int nextPlayer;
+    private int gameWinner;
+    private String comment;
+
+    public Game(){
+        this.currentBoard = new Board();
+        this.currentBoard.setParent( this );
+
+        this.nextPlayer = GamePiece.Black;
+        this.gameWinner = GamePiece.Empty;
+
+        this.boardHistory = new ArrayList<>();
+    }
+
     public User getUser() {
         return user;
     }
@@ -31,25 +51,6 @@ public class Game {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @OneToOne(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Board currentBoard;
-
-    @OneToMany(mappedBy = "boardHistory", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BoardHistory> boardHistory;
-
-    private int nextPlayer;
-    private int gameWinner;
-
-    public Game(){
-        this.currentBoard = new Board();
-        this.currentBoard.setParent( this );
-
-        this.nextPlayer = GamePiece.Black;
-        this.gameWinner = GamePiece.Empty;
-
-        this.boardHistory = new ArrayList<>();
     }
 
     public List<BoardHistory> getHistory() {
@@ -67,6 +68,14 @@ public class Game {
     public void setCurrentBoard(Board currentBoard) {
         this.currentBoard = currentBoard;
         currentBoard.setParent( this );
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public void placePiece(int color, int xPosition, int yPosition) throws Exception {
@@ -94,7 +103,9 @@ public class Game {
             }
         }
 
-        currentBoard.setLastPiecePlaced( new GameMove( color, xPosition, yPosition ));
+        GameMove move = new GameMove( color, xPosition, yPosition );
+        move.setBoard( currentBoard );
+        currentBoard.setLastPiecePlaced( move );
         currentBoard.setSerializedBoard();
     }
 
@@ -171,10 +182,11 @@ public class Game {
         return nextPlayer;
     }
 
-    public void undo(){
+    public void undo() {
         this.nextPlayer = this.currentBoard.getLastPiecePlaced().getColor();
-//        this.currentBoard = this.getHistory().get(this.getHistory().size() - 1);
-//        this.getHistory().remove(this.getHistory().size() - 1);
+        this.currentBoard = new Board( this.getHistory().get(this.getHistory().size() - 1).getSerializedBoard() );
+        findPossibleMoves();
+        this.getHistory().remove(this.getHistory().size() - 1);
     }
 
     public void redo( int xPosition, int yPosition ) throws Exception {
@@ -186,12 +198,6 @@ public class Game {
         BoardHistory boardHistory = new BoardHistory( board.getSerializedBoard( ) );
         this.boardHistory.add( boardHistory );
     }
-//
-//    public int size(){
-//        return this.history.size();
-//    }
-//
-
 
 }
 

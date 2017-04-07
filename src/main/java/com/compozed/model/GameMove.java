@@ -50,4 +50,21 @@ public class GameMove {
     public void setyPosition(int yPosition) {
         this.yPosition = yPosition;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Board getBoard() {
+
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }

@@ -4,6 +4,7 @@ import com.compozed.model.Game;
 import com.compozed.model.GameMove;
 import com.compozed.repository.GameRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.annotations.SourceType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,9 +29,18 @@ public class GameController {
     @DeleteMapping("{id}")
     public Game undo(@PathVariable Long id) throws Exception{
         Game game = repository.findOne( id );
+        System.out.println( game.toString() );
         game.undo();
 
         return repository.save( game );
+    }
+
+    @PostMapping("{id}/comment")
+    public void addComment(@PathVariable Long id, @RequestBody String comment) throws Exception{
+        Game game = repository.findOne( id );
+        game.setComment( comment );
+
+        repository.save( game );
     }
 
 }

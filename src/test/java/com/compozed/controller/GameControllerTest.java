@@ -138,30 +138,93 @@ public class GameControllerTest {
         board = savedGame.getCurrentBoard();
         state = board.getState();
         assertEquals( "Chip at 3, 4 should now be black", GamePiece.Black, state[3][4] );
-//        assertEquals( "Should have a saved game history", 1, game.getHistory().size());
+        assertEquals( "Should have a saved game history", 1, game.getHistory().size());
     }
 
     @Test
     @Transactional
     @Rollback
     public void testGameUndo() throws Exception {
+        User user = new User();
+        user.setEmail("abc1234@junk.com");
+        user.setPassword("password");
+
+        MockHttpServletRequestBuilder request1 = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(user));
+
+        MvcResult result = this.mockMvc.perform(request1)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject response = new JSONObject( result.getResponse().getContentAsString() );
+        JSONObject game = response.getJSONObject( "game" );
+        int gameID = game.getInt("id");
+
+        MockHttpServletRequestBuilder request2 = post("/games/" + gameID )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\": 2, \"xPosition\": 2, \"yPosition\": 4}");
+        this.mockMvc.perform(request2)
+                .andExpect(status().isOk());
+
+        request2 = post("/games/" + gameID )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"color\": 1, \"xPosition\": 2, \"yPosition\": 5}");
+        this.mockMvc.perform(request2)
+                .andExpect(status().isOk());
+
+        MockHttpServletRequestBuilder request = delete("/games/" + gameID);
+
+        MvcResult result2 = this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nextPlayer", equalTo(GamePiece.White)))
+                .andReturn();
+        JSONObject response2 = new JSONObject( result2.getResponse().getContentAsString() );
+        System.out.println(response2.toString());
+        JSONObject board = response2.getJSONObject( "currentBoard" );
+        String serializedBoard = board.getString( "serializedBoard" );
+        Board board2 = new Board( serializedBoard );
+
+
+        assertEquals(GamePiece.Possible, board2.getPiece(2, 5) );
+
+        assertEquals(4, board2.getBlackCount() );
+
+        assertEquals(4, board2.getBlackCount() );
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testCanLeaveACommentOnGame() throws Exception {
         Game game = new Game();
+        Board currentBoard = game.getCurrentBoard();
 
-        game.placePiece( GamePiece.Black, 2, 4 );
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                currentBoard.setPiece(GamePiece.White, x, y);
+            }
+        }
 
-        game.placePiece( GamePiece.White, 2, 5 );
-        game = gameRepository.save(game);
+        currentBoard.setPiece(GamePiece.Black, 0, 0);
+        currentBoard.setPiece(GamePiece.Empty, 7, 7);
 
-        MockHttpServletRequestBuilder request = delete("/games/" + game.getId());
+        game.getCurrentBoard().setSerializedBoard();
+
+        game.placePiece(GamePiece.Black, 7, 7);
+
+        gameRepository.save(game);
+
+        System.out.println( "GAME ID: " + game.getId() );
+
+        MockHttpServletRequestBuilder request = post("/games/" + game.getId() + "/comment")
+                .content("This is a comment.");
 
         this.mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nextPlayer", equalTo(GamePiece.White)));
-
-        Game savedGame = gameRepository.findOne(game.getId());
-
-//        assertEquals(GamePiece.Possible, savedGame.getCurrentBoard().getState()[2][5] );
+                .andExpect(status().isOk());
     }
+
 
 
 //    @Test

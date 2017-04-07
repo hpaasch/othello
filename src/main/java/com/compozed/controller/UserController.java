@@ -41,17 +41,17 @@ public class UserController {
         Content content = new Content("text/plain", "Hello, Welcome");
         Mail mail = new Mail(from, subject, to, content);
 
-//        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
-//        Request request = new Request();
-//        try {
-//            request.method = Method.POST;
-//            request.endpoint = "mail/send";
-//            request.body = mail.build();
-//            Response response = sg.api(request);
-//        } catch (IOException ex) {
-//            throw ex;
-//        }
-//
+        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+        Request request = new Request();
+        try {
+            request.method = Method.POST;
+            request.endpoint = "mail/send";
+            request.body = mail.build();
+            Response response = sg.api(request);
+        } catch (IOException ex) {
+            throw ex;
+        }
+
 
         GameResponse response = new GameResponse( game );
         return response;

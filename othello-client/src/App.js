@@ -15,7 +15,8 @@ class App extends Component {
       game: null,
       userID: 0,
       latestMove: null,
-      undoRedoValue: 'Undo'
+      undoRedoValue: 'Undo',
+      nextPlayer: "Black"
 
     }
     this.register = this.register.bind(this);
@@ -61,14 +62,12 @@ class App extends Component {
       // console.log("My Parent is: ",event.target.parentNode)
       console.log("Piece Make move: ",event.target.parentNode.getAttribute('x')+ ", " + event.target.parentNode.getAttribute('y'))
       this.submitMove(game.nextPlayer, event.target.parentNode.getAttribute('x'), event.target.parentNode.getAttribute('y') )
-      this.displayWinner();
     }
     else if(event.target.className === "cellDivs"){
       // console.log("My child is: ",event.target.children[0])
       if(event.target.children.length > 0 && event.target.children[0].className === "possiblePiece"){
         console.log("Div Make move: ",event.target.getAttribute('x')+ ", " + event.target.getAttribute('y'))
         this.submitMove(game.nextPlayer, event.target.getAttribute('x'), event.target.getAttribute('y') )
-        this.displayWinner();
       }
     }
 
@@ -88,8 +87,8 @@ class App extends Component {
       .then( (response) => response.json() )
       .then( (game) => {
         console.log("GAME: ", game)
-        this.setState({mode: "Game", game: game, latestMove: payload})
-
+        this.setState({mode: "Game", game: game, latestMove: payload, nextPlayer: game.nextPlayer == 1 ? "White" : "Black"})
+        this.displayWinner()
       });
 
   }
@@ -112,21 +111,35 @@ class App extends Component {
     }
   }
 
+  fetchComment(prompt){
+    let headers = new Headers();
+    let init = {method: 'POST', headers: headers, body: prompt };
+    let route = "/games/" + this.state.game.id + "/comment";
+
+    return fetch(route, init);
+
+  }
+
   displayWinner(){
     if(this.state.game.winner === 1){
       var prompt = window.prompt("Congratulations, White player! You win!","(Optional) Leave a comment");
-      // Save last state of board to game history of current user
+      this.fetchComment(prompt);
     }
     else if(this.state.game.winner === 2){
       var prompt = window.prompt("Congratulations, Black player! You win!","(Optional) Leave a comment");
+      this.fetchComment(prompt);
     }
     else if(this.state.game.winner === 4){
       var prompt = window.prompt("You've tied!","(Optional) Leave a comment");
+      this.fetchComment(prompt);
     }
     else {
       console.log("No winner yet");
     }
+
   }
+
+
 
   get display(){
     switch(this.state.mode.toLowerCase()){
@@ -142,7 +155,7 @@ class App extends Component {
 
             <GameHistory container="History" board={JSON.parse(this.state.game.currentBoard['serializedBoard'])}/>
 
-            <Game container="Game" currentBoard={JSON.parse(this.state.game.currentBoard['serializedBoard'])} makeMove={this.postMove} undoRedo={this.undoRedo} undoRedoValue={this.state.undoRedoValue}/>
+            <Game container="Game" currentBoard={JSON.parse(this.state.game.currentBoard['serializedBoard'])} makeMove={this.postMove} undoRedo={this.undoRedo} undoRedoValue={this.state.undoRedoValue} nextPlayer={this.state.nextPlayer}/>
 
             <div className="playerScore">
               <div className="blackPieceScoreCounter"></div><span className="pieceCount">X {this.state.game.currentBoard.blackCount}</span><br/>
