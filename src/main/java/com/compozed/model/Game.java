@@ -2,6 +2,8 @@ package com.compozed.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class Game {
     private int nextPlayer;
     private int gameWinner;
     private String comment;
-//    private DateTime completionDateTime;
+    private String completionDateTime;
 
     public Game(){
         this.currentBoard = new Board();
@@ -81,6 +83,14 @@ public class Game {
         this.comment = comment;
     }
 
+    public String getCompletionDateTime() {
+        return completionDateTime;
+    }
+
+    public void setCompletionDateTime(String completionDateTime) {
+        this.completionDateTime = completionDateTime;
+    }
+
     public void placePiece(int color, int xPosition, int yPosition) throws Exception {
         getCurrentBoard().setState();
 
@@ -103,6 +113,17 @@ public class Game {
             if (!findPossibleMoves()) {
                 nextPlayer = nextPlayer == GamePiece.Black ? GamePiece.White : GamePiece.Black;
                 findPossibleMoves();
+            }
+        }
+        else {
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+
+            completionDateTime = dtf.print( new DateTime() );
+            if( gameWinner == GamePiece.Black ) {
+                getUser().setWinCount( getUser().getWinCount() + 1 );
+            }
+            if( gameWinner == GamePiece.White ) {
+                getUser().setLossCount( getUser().getLossCount() + 1 );
             }
         }
 

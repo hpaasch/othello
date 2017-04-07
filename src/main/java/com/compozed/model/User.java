@@ -32,6 +32,8 @@ public class User {
 
     private String email;
     private String password;
+    private int winCount;
+    private int lossCount;
 
     public String getEmail() {
         return email;
@@ -47,6 +49,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getWinCount() {
+        return winCount;
+    }
+
+    public void setWinCount(int winCount) {
+        this.winCount = winCount;
+    }
+
+    public int getLossCount() {
+        return lossCount;
+    }
+
+    public void setLossCount(int lossCount) {
+        this.lossCount = lossCount;
     }
 
     public void addGame(Game game){
