@@ -21,8 +21,9 @@ public class Board {
     @JsonIgnore
     private int[][] state;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private GameMove lastPiecePlaced = null;
+    private int lastMoveColor;
+    private int lastMoveXPosition;
+    private int lastMoveYPosition;
 
     private String serializedBoard;
 
@@ -53,6 +54,10 @@ public class Board {
         this.state[4][2] = GamePiece.Possible;
         this.state[3][5] = GamePiece.Possible;
 
+        lastMoveColor = GamePiece.Empty;
+        lastMoveXPosition = -1;
+        lastMoveYPosition = -1;
+
         setSerializedBoard();
     }
 
@@ -63,11 +68,13 @@ public class Board {
     }
 
     public GameMove getLastPiecePlaced() {
-        return lastPiecePlaced;
+        return new GameMove( this.lastMoveColor, this.lastMoveXPosition, this.lastMoveYPosition );
     }
 
     public void setLastPiecePlaced(GameMove lastPiecePlaced) {
-        this.lastPiecePlaced = lastPiecePlaced;
+        this.lastMoveColor = lastPiecePlaced.getColor();
+        this.lastMoveXPosition = lastPiecePlaced.getxPosition();
+        this.lastMoveYPosition = lastPiecePlaced.getyPosition();
     }
 
     public String getSerializedBoard() throws Exception{
@@ -220,4 +227,27 @@ public class Board {
         return builder.toString();
     }
 
+    public int getLastMoveColor() {
+        return lastMoveColor;
+    }
+
+    public void setLastMoveColor(int lastMoveColor) {
+        this.lastMoveColor = lastMoveColor;
+    }
+
+    public int getLastMoveXPosition() {
+        return lastMoveXPosition;
+    }
+
+    public void setLastMoveXPosition(int lastMoveXPosition) {
+        this.lastMoveXPosition = lastMoveXPosition;
+    }
+
+    public int getLastMoveYPosition() {
+        return lastMoveYPosition;
+    }
+
+    public void setLastMoveYPosition(int lastMoveYPosition) {
+        this.lastMoveYPosition = lastMoveYPosition;
+    }
 }

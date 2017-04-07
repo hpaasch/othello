@@ -159,7 +159,7 @@ public class GameTest {
     @Test
     public void testBoardKnowsLastGameMove() throws Exception {
         Game game = new Game();
-        assertNull("initial board has no piece placed", game.getCurrentBoard().getLastPiecePlaced());
+        assertEquals("initial board has no piece placed", GamePiece.Empty, game.getCurrentBoard().getLastPiecePlaced().getColor());
 
         game.placePiece(GamePiece.Black, 2, 4);
         game.placePiece( GamePiece.White, 2, 5 );

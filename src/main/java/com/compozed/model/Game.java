@@ -1,6 +1,8 @@
 package com.compozed.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class Game {
     private int nextPlayer;
     private int gameWinner;
     private String comment;
+//    private DateTime completionDateTime;
 
     public Game(){
         this.currentBoard = new Board();
@@ -104,7 +107,6 @@ public class Game {
         }
 
         GameMove move = new GameMove( color, xPosition, yPosition );
-        move.setBoard( currentBoard );
         currentBoard.setLastPiecePlaced( move );
         currentBoard.setSerializedBoard();
     }

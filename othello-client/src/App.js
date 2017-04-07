@@ -18,7 +18,6 @@ class App extends Component {
       latestMove: null,
       undoRedoValue: 'Undo',
       nextPlayer: "Black"
-
     }
     this.register = this.register.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -32,12 +31,9 @@ class App extends Component {
   }
 
   submitForm(event){
-    console.log("We submitted")
     event.preventDefault();
     let eventData = event.target.children;
-    console.log(eventData[0].value)
     const payload = {'email': eventData[0].value, 'password': eventData[1].value }
-    // this.postUser(payload)
 
     let route = "/login";
 
@@ -51,7 +47,6 @@ class App extends Component {
     return fetch(route, init)
       .then( (response) => response.json() )
       .then( (game) => {
-        console.log("GAME: ", game)
         this.setState({mode: "Game", game: game.game, userID: game.userID})
       });
 

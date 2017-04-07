@@ -5,7 +5,7 @@ export default class GameHistory extends Component {
 
   get historyGames() {
     return this.props.games.map( (game, i) => {
-      return (<Game container={this.props.container} currentBoard={this.props.board}/>)
+      return (<Game container={this.props.container} currentBoard={JSON.parse(game.currentBoard['serializedBoard'])}/>)
     })
   }
 
