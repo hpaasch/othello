@@ -38,4 +38,20 @@ public class BoardHistory {
 
         return board;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Game getBoardHistory() {
+        return boardHistory;
+    }
+
+    public void setBoardHistory(Game boardHistory) {
+        this.boardHistory = boardHistory;
+    }
 }

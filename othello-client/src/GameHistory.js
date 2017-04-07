@@ -3,15 +3,18 @@ import Game from './Game'
 
 export default class GameHistory extends Component {
 
-  // get gameHistory() {
-  //
-  // }
+  get historyGames() {
+    return this.props.games.map( (game, i) => {
+      return (<Game container={this.props.container} currentBoard={this.props.board}/>)
+    })
+  }
+
 
   render() {
     return(
       <div className="history">
-        <h3>Game History</h3>
-        <Game container={this.props.container} currentBoard={this.props.board}/>
+        <button id="gameHistoryButton" type="button" class="btn btn-info" onClick={this.props.getHistory}>Game History</button>
+        {this.historyGames}
       </div>
     )
 

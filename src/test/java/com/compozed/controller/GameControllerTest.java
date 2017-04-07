@@ -41,8 +41,8 @@ public class GameControllerTest {
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
-//    @Transactional
-//    @Rollback
+    @Transactional
+    @Rollback
     public void testGameCanPlayThreeMoves() throws Exception {
         User user = new User();
         user.setEmail("abc1234@junk.com");
@@ -138,7 +138,7 @@ public class GameControllerTest {
         board = savedGame.getCurrentBoard();
         state = board.getState();
         assertEquals( "Chip at 3, 4 should now be black", GamePiece.Black, state[3][4] );
-        assertEquals( "Should have a saved game history", 1, game.getHistory().size());
+        assertEquals( "Should have a saved game history", 1, game.getBoardHistory().size());
     }
 
     @Test

@@ -29,7 +29,6 @@ public class GameController {
     @DeleteMapping("{id}")
     public Game undo(@PathVariable Long id) throws Exception{
         Game game = repository.findOne( id );
-        System.out.println( game.toString() );
         game.undo();
 
         return repository.save( game );

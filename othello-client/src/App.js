@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       mode: "Login",
       game: null,
+      games: [],
       userID: 0,
       latestMove: null,
       undoRedoValue: 'Undo',
@@ -23,6 +24,7 @@ class App extends Component {
     this.submitForm = this.submitForm.bind(this);
     this.postMove = this.postMove.bind(this);
     this.undoRedo = this.undoRedo.bind(this);
+    this.getHistory = this.getHistory.bind(this);
   }
 
   register(){
@@ -59,19 +61,30 @@ class App extends Component {
     const game = this.state.game;
     if(event.target.className === "possiblePiece"){
 
-      // console.log("My Parent is: ",event.target.parentNode)
       console.log("Piece Make move: ",event.target.parentNode.getAttribute('x')+ ", " + event.target.parentNode.getAttribute('y'))
       this.submitMove(game.nextPlayer, event.target.parentNode.getAttribute('x'), event.target.parentNode.getAttribute('y') )
     }
     else if(event.target.className === "cellDivs"){
-      // console.log("My child is: ",event.target.children[0])
       if(event.target.children.length > 0 && event.target.children[0].className === "possiblePiece"){
         console.log("Div Make move: ",event.target.getAttribute('x')+ ", " + event.target.getAttribute('y'))
         this.submitMove(game.nextPlayer, event.target.getAttribute('x'), event.target.getAttribute('y') )
       }
     }
+  }
 
+  getHistory( event ){
+    let route = "/users/" + this.state.userID + "/games";
 
+    let headers = new Headers();
+    let init = { method: 'GET', headers: headers };
+
+    return fetch(route, init)
+      .then( (response) => response.json() )
+      .then( (games) => {
+        console.log( "Found " + games.length + " games" );
+        this.setState({ games: games })
+
+      });
   }
 
   submitMove(color, xPos, yPos){
@@ -87,7 +100,7 @@ class App extends Component {
       .then( (response) => response.json() )
       .then( (game) => {
         console.log("GAME: ", game)
-        this.setState({mode: "Game", game: game, latestMove: payload, nextPlayer: game.nextPlayer == 1 ? "White" : "Black"})
+        this.setState({mode: "Game", game: game, latestMove: payload, undoRedoValue: "Undo", nextPlayer: game.nextPlayer == 1 ? "White" : "Black"})
         this.displayWinner()
       });
 
@@ -102,11 +115,13 @@ class App extends Component {
         .then((response) => response.json())
         .then((game) => {
           console.log("GAME: ", game)
-          this.setState({mode: "Game", game: game, undoRedoValue: 'Redo'})
+          this.setState({mode: "Game", game: game, undoRedoValue: 'Redo', nextPlayer: game.nextPlayer == 1 ? "White" : "Black"})
         });
     }
     else if(this.state.undoRedoValue === "Redo"){
-      this.submitMove(this.latestMove['color'], this.latestMove['xPosition'], this.latestMove['yPosition'])
+      console.log("LATEST MOVE: ", this.state.latestMove)
+
+      this.submitMove(this.state.latestMove['color'], this.state.latestMove['xPosition'], this.state.latestMove['yPosition'])
       this.setState({undoRedoValue: 'Undo'})
     }
   }
@@ -153,7 +168,7 @@ class App extends Component {
 
 
 
-            <GameHistory container="History" board={JSON.parse(this.state.game.currentBoard['serializedBoard'])}/>
+            <GameHistory container="History" board={JSON.parse(this.state.game.currentBoard['serializedBoard'])} getHistory={this.getHistory} games={this.state.games}/>
 
             <Game container="Game" currentBoard={JSON.parse(this.state.game.currentBoard['serializedBoard'])} makeMove={this.postMove} undoRedo={this.undoRedo} undoRedoValue={this.state.undoRedoValue} nextPlayer={this.state.nextPlayer}/>
 

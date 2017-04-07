@@ -53,11 +53,11 @@ public class Game {
         this.id = id;
     }
 
-    public List<BoardHistory> getHistory() {
-        return this.boardHistory;
+    public List<BoardHistory> getBoardHistory() {
+        return boardHistory;
     }
 
-    public void setHistory(List<BoardHistory> boardHistory) {
+    public void setBoardHistory(List<BoardHistory> boardHistory) {
         this.boardHistory = boardHistory;
     }
 
@@ -184,9 +184,12 @@ public class Game {
 
     public void undo() {
         this.nextPlayer = this.currentBoard.getLastPiecePlaced().getColor();
-        this.currentBoard = new Board( this.getHistory().get(this.getHistory().size() - 1).getSerializedBoard() );
+        this.currentBoard = new Board( this.getBoardHistory().get(this.getBoardHistory().size() - 1).getSerializedBoard() );
+        System.out.println( this.currentBoard);
         findPossibleMoves();
-        this.getHistory().remove(this.getHistory().size() - 1);
+        this.getBoardHistory().remove(this.getBoardHistory().size() - 1);
+        this.currentBoard.setWhiteCount( this.currentBoard.getWhiteCount() );
+        this.currentBoard.setBlackCount( this.currentBoard.getBlackCount() );;
     }
 
     public void redo( int xPosition, int yPosition ) throws Exception {
@@ -196,6 +199,7 @@ public class Game {
     public void addBoard( Board board ) throws Exception {
         board.setSerializedBoard();
         BoardHistory boardHistory = new BoardHistory( board.getSerializedBoard( ) );
+        boardHistory.setBoardHistory( this );
         this.boardHistory.add( boardHistory );
     }
 

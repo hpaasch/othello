@@ -12,6 +12,8 @@ export default class LoginForm extends Component {
           <input placeholder="Password" type="password" id="passwordInput"/>
           <button id="loginButton" type="submit">Login</button>
         </form>
+        <br/>
+        <br/>
         <button id="registerButton" onClick={this.props.registerClick}>Register</button>
       </div>
     );

@@ -21,7 +21,7 @@ public class Board {
     @JsonIgnore
     private int[][] state;
 
-    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private GameMove lastPiecePlaced = null;
 
     private String serializedBoard;
@@ -30,6 +30,37 @@ public class Board {
     @OneToOne
     @JsonIgnore
     private Game parent;
+
+    private int blackCount;
+    private int whiteCount;
+
+    public Board(){
+        this.state = new int[8][8];
+
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                this.state[y][x] = GamePiece.Empty;
+            }
+        }
+
+        this.state[3][3] = GamePiece.Black;
+        this.state[4][4] = GamePiece.Black;
+        this.state[4][3] = GamePiece.White;
+        this.state[3][4] = GamePiece.White;
+
+        this.state[2][4] = GamePiece.Possible;
+        this.state[5][3] = GamePiece.Possible;
+        this.state[4][2] = GamePiece.Possible;
+        this.state[3][5] = GamePiece.Possible;
+
+        setSerializedBoard();
+    }
+
+    public Board( String serializedBoard ) {
+        this.state = new int[8][8];
+        this.serializedBoard = serializedBoard;
+        setState();
+    }
 
     public GameMove getLastPiecePlaced() {
         return lastPiecePlaced;
@@ -75,41 +106,17 @@ public class Board {
         this.parent = parent;
     }
 
-    public Board(){
-        this.state = new int[8][8];
-
-        for (int y = 0; y < 8; y++) {
-            for (int x = 0; x < 8; x++) {
-                this.state[y][x] = GamePiece.Empty;
-            }
-        }
-
-        this.state[3][3] = GamePiece.Black;
-        this.state[4][4] = GamePiece.Black;
-        this.state[4][3] = GamePiece.White;
-        this.state[3][4] = GamePiece.White;
-
-        this.state[2][4] = GamePiece.Possible;
-        this.state[5][3] = GamePiece.Possible;
-        this.state[4][2] = GamePiece.Possible;
-        this.state[3][5] = GamePiece.Possible;
-
-        setSerializedBoard();
-    }
-
-    public Board( String serializedBoard ) {
-        this.state = new int[8][8];
-        this.serializedBoard = serializedBoard;
-        setState();
-    }
-
     public int getWhiteCount(){
+        System.out.println( "BOARD AT WHITE COUNT:\n" + this.toString() );
         int counter = 0;
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 counter += (this.state[x][y] == GamePiece.White) ? 1 : 0;
             }
         }
+
+        this.whiteCount = counter;
+
         return counter;
     }
 
@@ -120,7 +127,18 @@ public class Board {
                 counter += (this.state[x][y] == GamePiece.Black) ? 1 : 0;
             }
         }
+
+        this.blackCount = counter;
+
         return counter;
+    }
+
+    public void setBlackCount(int blackCount) {
+        this.blackCount = blackCount;
+    }
+
+    public void setWhiteCount(int whiteCount) {
+        this.whiteCount = whiteCount;
     }
 
     public int[][] getState(){
@@ -140,8 +158,8 @@ public class Board {
     }
 
     public int checkForWinner() {
-        int blackCount = this.getBlackCount();
-        int whiteCount = this.getWhiteCount();
+        blackCount = this.getBlackCount();
+        whiteCount = this.getWhiteCount();
         if (blackCount + whiteCount == 64) {
             if (blackCount == whiteCount) {
                 return GamePiece.Tie;
